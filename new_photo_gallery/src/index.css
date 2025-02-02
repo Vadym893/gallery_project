@@ -1,0 +1,331 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.header_container,.advertisement_container,.login_container{
+  width: 100vw;
+}
+.project_container{
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.header_container{
+  border-bottom: 1px rgb(231 225 225) solid;
+}
+.advertisement_container{
+  height: 5vh;
+  background-color: black;
+  color: white;
+  font-style: oblique;
+}
+.advertisement_item{
+  margin: 0 1.3vw;
+  margin-top: 1vh;
+}
+.advertisement_content{
+  display: flex;
+  justify-content: center;
+}
+.advertisement_button{
+
+  text-align: center;
+  cursor: pointer;
+  width: 5vw;
+  background-color: white;
+  color: black;
+  font-size: 0.9rem;
+  border-radius: 10px;
+}
+.header_menu{
+  display: flex;
+  justify-content: space-between;
+}
+.header_list{
+  display: flex;
+  justify-content:center;
+  list-style: none;
+
+}
+.header_list_item{
+  margin: 0 1vw;
+  cursor: pointer;
+}
+.header_logo{
+  margin-left: 3vw;
+}
+.error_container{
+  position: relative;
+  width: 100wh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  top: 25vh;
+}
+.error_text{
+  font-size: 2.5rem;
+}
+.link_element{
+  text-decoration: none;
+  position: relative;
+}
+.form-container{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100wh;
+  margin: 0.5% 40% 0 40%;
+}
+.form_inputs{
+  display: flex;
+  justify-content: center;
+  flex-direction: column
+}
+.form-content-top{
+  border: 1px rgb(231 225 225) solid;
+  margin-bottom: 1vh;
+}
+.input-field{
+  margin: 0.33vh 2.5vw 0.33vh 2.5vw;
+  height: 3vh;
+  background-color: rgb(253, 252, 252);
+  border: 1px rgb(247 241 241) solid;
+}
+.button-next{
+  margin: 0.2vh 2.5vw 3vh 2.5vw;
+  height: 3vh;
+  border: 0;
+  border-radius: 5px;
+  background: #4cb5f9;
+  color: white;
+  
+}
+.logo-registration{
+  font-size: 2rem;
+  margin: 6vh 0 2vh 0;
+  text-align: center;
+}
+.agree-text{
+  font-size: 0.7rem;
+  margin: 1.5vh 2.5vw 1.5vh 2.5vw;
+  text-align: center;
+}
+.registration-text{
+  font-size: 1rem;
+  margin: 0.2vh 2.5vw 4vh 2.5vw;
+  text-align: center;
+}
+.form-content-bottom{
+  border: 1px rgb(231 225 225) solid;
+  display: flex;
+  height: 7vh;
+  justify-content: center;
+  align-items: center;
+}
+.account-text-registration{
+  font-size: 0.9rem;
+}
+.link-registration{
+  color:#4cb5f9 ;
+  text-decoration: none;
+}
+.form-content-footer{
+  text-align: center;
+  margin-top: 2vh;
+}
+.logo-login{
+  font-size: 2rem;
+  margin: 6vh 0 5vh 0;
+  text-align: center;
+}
+.button-login{
+  margin: 1.1vh 2.5vw 3vh 2.5vw;
+  height: 3vh;
+  border: 0;
+  border-radius: 5px;
+  background: #4cb5f9;
+  color: white;
+  
+}
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1vh 0;
+}
+.line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: #ddd;
+}
+.or-text {
+  padding: 0 1vh;
+  color: #807d7d;
+  font-size: 0.9rem;
+}
+.form-container-login{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100wh;
+  margin: 4.5% 40% 0 40%;
+}
+.password-reset{
+  text-decoration: none;
+  color: rgb(21, 26, 49);
+  text-align: center;
+  font-size: 0.8rem;
+}
+.link-submit{
+  text-decoration: none;
+  color:rgb(247 241 241);
+}
+.text-submit{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block; 
+}
+#settings{
+  position: relative;
+  width: 1.6vw;
+  height: 3vh;
+  cursor: pointer;
+}
+#settings #menu-popup{
+  position: fixed;
+  display: none;
+  float: right;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 2.5vh;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+ #menu-popupvisible  {
+  position: absolute;
+  right: -3.95vw;
+  overflow: hidden;
+  top: 4.7vh;
+  z-index: 1000;
+  display: block;
+  transform: translateY(0);
+}
+.menu-item{
+  font-size: 0.8rem;
+  padding: 1.5vh 2.5vw;
+  border: 1px solid rgb(231 225 225) ;
+  list-style: none;
+}
+.profile_header{
+  position: relative;
+  width: 100%;
+  height: 35vh;
+  display: flex;
+  z-index: 1;
+  justify-content: space-around;
+}
+.info_holder{
+  width: 30%;
+  height: 25vh;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+}
+.row{
+  display: flex;
+  justify-content: space-evenly;
+}
+#error_msg{
+  text-align: center;
+  margin-bottom: 1.5vh;
+  font-size: 1.1rem;
+  color: rgb(255 42 5);
+  font-family: cursive;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  background: rgba(0, 0, 0, 0.6); 
+  z-index: 999; 
+}
+
+.modal-content {
+  position: relative; 
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 20vw; 
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup_close .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.popup_close .close:hover {
+  color: red;
+  transition: color 0.2s ease;
+}
+.popup_data {
+  text-align: center;
+}
+.upload-button {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+  background-color: #0056b3; 
+}
+.profile_photo_holder{
+  width: 80vw;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.profile_photo_gallery_item{
+  position: relative;
+  width: 17vw;
+  margin: 0.5VW;
+}
+.profile_gallery_photo{
+  object-fit: cover;
+  width: 15vw;
+  height: 15vw;
+  cursor: pointer;
+}
