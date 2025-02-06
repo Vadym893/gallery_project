@@ -20,10 +20,10 @@ imageRoutes.get('/images/:userId', (req, res) => {
       res.json({ images });
     });
 });
-imageRoutes.get("/profile/image",(req,res)=>{
+imageRoutes.get("/images/image",(req,res)=>{
     const data=req.body;
-    const sql = 'SELECT image_data FROM gallery WHERE id = ? && image_id = ?';
-    db.query(sql, [data.id,data.image], (err, results) => {
+    const sql = 'SELECT image_data FROM gallery WHERE image_id = ?';
+    db.query(sql, [data.image], (err, results) => {
         if (err) {
             console.error('Error fetching user data:', err);
             res.status(500).send('Database error');
