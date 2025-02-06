@@ -9,7 +9,7 @@ const UserImages = ({ userId }) => {
     useEffect(() => {
       const fetchImages = async () => {
         try {
-          const response = await axios.get(`http://localhost:8081/images/${userId}`, {
+          const response = await axios.get(`http://localhost:8081/media/images/${userId}`, {
             headers: {
               "Content-Type": "application/json",
               ...(getCookie("accessToken") ? { Authorization: "Bearer " + getCookie("accessToken") } : {}),

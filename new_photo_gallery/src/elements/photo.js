@@ -18,7 +18,7 @@ export function Photo(){
                 setImageId(params.get("id"));
                 const data={id:userId,image:imageId}
                 console.log(data)
-                const response = await axios.get(`http://localhost:8081/profile/image`, {
+                const response = await axios.get(`http://localhost:8081/images/profile/image`, {
                     data:{id:userId,image:imageId},
                     headers: {
                     "Content-Type": "application/json",

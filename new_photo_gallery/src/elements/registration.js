@@ -9,7 +9,7 @@ export const Registration=()=>{
     const [email,setEmail]=useState("");
     const handleSubmit=(e)=>{
         e.preventDefault()
-        Axios.post("http://localhost:8081/signup",{
+        Axios.post("http://localhost:8081/auth/signup",{
             username,
             email,
             nickname,

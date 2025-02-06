@@ -23,7 +23,7 @@ export function User_page(){
             try {
 
                 const response = await axios.post(
-                    'http://localhost:8081/maindata',
+                    'http://localhost:8081/user/maindata',
                     {
                         id: getCookie("userdata"),
                     },

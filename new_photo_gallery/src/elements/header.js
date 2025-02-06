@@ -15,13 +15,7 @@ export  function Header_home({onAddClick}){
             delete_cookie('accessToken');
             console.log('Logged out successfully');
             window.location.href="/login";
-            // Optionally, redirect to the login page or home page
     }  
-    var intToRoman = function(num) {
-      let data={"I":1,"V":5,"X":10,"L":50,"C":100,"D":500,"M":500}
-      let number = num.toString();
-      
-  };
     return(
         <>
             <div className="header_container">

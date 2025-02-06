@@ -10,7 +10,7 @@ export const Login=()=>{
         e.preventDefault();
         try { 
             
-            const loginResponse = await axios.post('http://localhost:8081/login', {
+            const loginResponse = await axios.post('http://localhost:8081/auth/login', {
             username: username,
             password: password,
             headers: {

@@ -27,7 +27,7 @@ function PopupForm({ onClose }) {
 
       try {
           setStatus('Uploading...');
-          const response = await axios.post('http://localhost:8081/upload', formData, {
+          const response = await axios.post('http://localhost:8081/images/upload', formData, {
               headers: {
                   'Content-Type': 'multipart/form-data',
               },
