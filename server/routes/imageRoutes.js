@@ -20,25 +20,18 @@ imageRoutes.get('/images/:userId', (req, res) => {
       res.json({ images });
     });
 });
-imageRoutes.get("/images/image",(req,res)=>{
-    const data=req.body;
-    const sql = 'SELECT image_data FROM gallery WHERE image_id = ?';
-    db.query(sql, [data.image], (err, results) => {
+imageRoutes.get("/images/image/:id", (req, res) => {
+    const imageId = req.params.id; 
+    const sql = "SELECT image_data FROM gallery WHERE image_id = ?";
+    db.query(sql, [Number(imageId)], (err, results) => {
         if (err) {
-            console.error('Error fetching user data:', err);
-            res.status(500).send('Database error');
-        }
-        if (results.length === 0) {
-            res.status(404).send('User data not found');
+            console.error("Error fetching image:", err);
+            return res.status(500).send("Database error");
         }
         const image = results[0];
-        res.status(202).json({
-            image:image.image_data.toString('base64')
-        });
-
+        res.status(202).json({ image: image.image_data.toString("base64") });
     });
-    
-})
+});
 imageRoutes.post('/upload',upload.fields([{ name: 'file', maxCount: 1 }]),async(req,res)=>{
     const user_id = req.body.user_id; 
 
