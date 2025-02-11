@@ -1,0 +1,19 @@
+
+services:
+  frontend:
+    build: ./new_photo_gallery
+    ports:
+      - "3000:80"
+    volumes:
+      - ./new_photo_gallery:/usr/src/app 
+      - /usr/src/app/node_modules 
+    depends_on:
+      - server
+
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/usr/src/app 
+      - /usr/src/app/node_modules 

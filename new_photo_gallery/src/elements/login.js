@@ -1,7 +1,7 @@
 import React,{useState} from "react";
 import { Link } from "react-router-dom";
 import { Header_home } from "./header";
-import { setCookie,getCookie } from "../app/cookies";
+import { setCookie} from "../app/cookies";
 import axios from "axios";
 export const Login=()=>{
     const [username,setUsername]=useState("");

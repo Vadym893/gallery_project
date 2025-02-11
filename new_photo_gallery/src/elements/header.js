@@ -1,7 +1,7 @@
 import React,{useState} from "react";
 import { Link } from "react-router-dom";
 import { getCookie,delete_cookie } from "../app/cookies";
-import axios from "axios";
+
 export  function Header_home({onAddClick}){
     const scroll_top=()=>{
         window.scrollTo({top: 0, behavior: 'smooth'});
@@ -46,7 +46,7 @@ export  function Header_home({onAddClick}){
                                     <li className="menu-item">Account privacy</li>
                                     <li className="menu-item">Favourites</li>
                                     <li className="menu-item">Account setting</li>
-                                    {window.location.pathname==`/profiles/${getCookie("userdata")}`?<li className="menu-item" onClick={() => onAddClick()}>Create</li>:null}
+                                    {window.location.pathname===`/profiles/${getCookie("userdata")}`?<li className="menu-item" onClick={() => onAddClick()}>Create</li>:null}
                                     <li className="menu-item"onClick={logout}>Log Out</li>
                                 </ul>
                             </div>

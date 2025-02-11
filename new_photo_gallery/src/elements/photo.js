@@ -1,47 +1,58 @@
 import React,{useEffect,useState} from "react";
-import { Link } from "react-router-dom";
-import { getCookie } from "../app/cookies";
+import { Header_home } from "./header";
 import axios from "axios";
 export function Photo(){
-    const [photos, setPhoto] = useState([]);
-    const [loading, setLoading] = useState(true); 
+    const [photo, setPhoto] = useState([]);
     const [error, setError] = useState(null);
     const [userId, setUserId] = useState(null);
     const [imageId, setImageId] = useState(null);
     useEffect(() => {
-        
+        const params = new URLSearchParams(window.location.search);
+        const fetchedUserId = params.get("userId");
+        const fetchedImageId = params.get("id");
+
+        setUserId(fetchedUserId);
+        setImageId(fetchedImageId);
+    }, []);
+    useEffect(() => {
+        if (!userId || !imageId) return;
         const fetchImage = async () => {
             try {
-
-                const params =  new URLSearchParams(window.location.search);
-                setUserId(params.get("userId"));
-                setImageId(params.get("id"));
-                const data={id:userId,image:imageId}
-                console.log(data)
-                const response = await axios.get(`http://localhost:8081/images/profile/image`, {
-                    data:{id:userId,image:imageId},
+                const response = await axios.get(`http://localhost:8081/media/images/image/${imageId}`, {
                     headers: {
-                    "Content-Type": "application/json",
-                    ...(getCookie("accessToken") ? { Authorization: "Bearer " + getCookie("accessToken") } : {}),
-                    },
-                    withCredentials: true, 
-                });
+                        "Content-Type": "application/json",
+                        ...(localStorage.authToken
+                            ? { Authorization: "Bearer " + localStorage.authToken }
+                            : {}),
+                        
+                        }
+                    }, {
+                        withCredentials: true 
+                    },);
       
               
-                setPhoto(response.data.images); 
+                setPhoto(`data:image/jpeg;base64,${response.data.image}`); 
             } catch (error) {
                 setError(error.message); 
-            } finally {
-                setLoading(false); 
-            }
-          };
-          fetchImage();
+            } 
+        };
+        fetchImage();
     },[userId,imageId])
         
     return(
         <>
-            <div className="services_container">
-                
+            <Header_home />
+            <div className="s_photo_container">
+                <div className='photo_section'>
+                    <div>
+                        {error && <p style={{ color: "red" }}>{error}</p>}
+                        {photo ? (
+                            <img src={photo}  style={{ width: "300px", height: "auto" }} />
+                        ) : (
+                            <p>Loading image...</p>
+                        )}
+                    </div>
+                </div>
             </div>
         </>
     );
