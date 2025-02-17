@@ -1,6 +1,5 @@
 import mysql from 'mysql';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const db = mysql.createConnection({
@@ -9,6 +8,7 @@ const db = mysql.createConnection({
   password: process.env.DB_PASSWORD, 
   database: process.env.DB_NAME     
 });
+
 db.connect((err) => {
     if (err) {
       console.error('Database connection error:', err);

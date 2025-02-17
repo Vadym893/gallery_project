@@ -2,11 +2,12 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import db from "../config/db.js";
+import db from "../config/main_db.js";
+import redisClient from "../config/token_db.js";
 const authRoutes = express.Router();
 
-const generateAccessToken = (user) => jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20m' });
-const generateRefreshToken = (user) => jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+const generateAccessToken = (user) => jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+const generateRefreshToken = (user) => jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
 authRoutes.post("/signup", async (req, res) => {
     const { email, username, nickname, password } = req.body;
@@ -32,26 +33,52 @@ authRoutes.post("/login", async (req, res) => {
     
     db.query('SELECT password, id FROM user_data WHERE login = ?', [username], async (err, results) => {
         if (err || results.length === 0) return res.status(401).send('Invalid credentials');
-        
+
         const validPassword = await bcrypt.compare(password, results[0].password);
         if (!validPassword) return res.status(403).send('Invalid credentials');
-        
-        req.session.accessToken = generateAccessToken({ username });
-        res.status(200).json({ accessToken: req.session.accessToken, id: results[0].id });
+
+        const accessToken = generateAccessToken(username);
+        const refreshToken = generateRefreshToken(username);
+
+        await redisClient.hSet(results[0].id, {
+            accessToken,
+            refreshToken
+        });
+
+        await redisClient.expire(results[0].id, 86400); 
+        await redisClient.expire(`${results[0].id}:accessToken`, 2400);
+        res.status(200).json({ accessToken: accessToken, id: results[0].id });
     });
 });
-authRoutes.post('/token', (req, res) => {
-    const { token } = req.body;
-    if (!token) return res.sendStatus(401);  
+async function checkAndRenewAccessToken(req, res, next) {
+    try {
+        const  userId  = req.headers["userid"];
+        if (!userId) return res.status(404).json({ error: "Unauthorized - No User ID Provided" });
 
-    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403); 
-            req.session.accessToken = generateAccessToken({ username: user.username });
-            localStorage.setItem('accessToken',req.session.accessToken, {
-                httpOnly: true,  
-                secure: process.env.NODE_ENV === 'production',  
-                maxAge: 20 * 60 * 1000  
-            });  
-    });
+        const tokens = await redisClient.hGetAll(userId);
+        if (!tokens.refreshToken) {
+            return res.status(401).json({ error: "Session expired. Please log in again." });
+        }
+
+        if (!tokens.accessToken && tokens.refreshToken) {
+            console.log(`🔄 Renewing access token for user ${userId}`);
+            const newAccessToken = generateAccessToken(userId);
+            await redisClient.hSet(userId, "accessToken", newAccessToken);
+            await redisClient.expire(`${userId}:accessToken`, 2400); 
+
+            req.accessToken = newAccessToken;
+        } else {
+            req.accessToken = tokens.accessToken;
+        }
+
+        req.userId = userId;
+        next();
+    } catch (err) {
+        console.error("❌ Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+authRoutes.get('/protected',checkAndRenewAccessToken, async (req, res) => {
+    res.json({ message: "Access granted", userId: req.userId, accessToken: req.accessToken });
 });
 export default authRoutes;

@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import db from "../config/db.js";
+import db from "../config/main_db.js";
 const imageRoutes = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });

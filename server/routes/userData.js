@@ -1,5 +1,5 @@
 import express from "express";
-import db from "../config/db.js";
+import db from "../config/main_db.js";
 const userData = express.Router();
 userData.post("/maindata",async(req,res)=>{
     const {id}=req.body;
