@@ -1,6 +1,8 @@
 import React,{useEffect,useState} from "react";
 import { Header_home } from "./header";
 import axios from "axios";
+import { getCookie } from "../app/cookies";
+import CommentSection from "./comments";
 export function Photo(){
     const [photo, setPhoto] = useState([]);
     const [error, setError] = useState(null);
@@ -21,11 +23,8 @@ export function Photo(){
                 const response = await axios.get(`http://localhost:8081/media/images/image/${imageId}`, {
                     headers: {
                         "Content-Type": "application/json",
-                        ...(localStorage.authToken
-                            ? { Authorization: "Bearer " + localStorage.authToken }
-                            : {}),
-                        
-                        }
+                        ...(getCookie("accessToken") ? { Authorization: "Bearer " + getCookie("accessToken") } : {}),
+                    }
                     }, {
                         withCredentials: true 
                     },);
@@ -44,14 +43,15 @@ export function Photo(){
             <Header_home />
             <div className="s_photo_container">
                 <div className='photo_section'>
-                    <div>
+                    <div id="single_photo">
                         {error && <p style={{ color: "red" }}>{error}</p>}
                         {photo ? (
-                            <img src={photo}  style={{ width: "300px", height: "auto" }} />
+                            <img src={photo} />
                         ) : (
                             <p>Loading image...</p>
                         )}
                     </div>
+                    <CommentSection photoId={imageId}/>
                 </div>
             </div>
         </>

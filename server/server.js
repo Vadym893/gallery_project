@@ -1,17 +1,20 @@
 import express from "express"
 import cors from "cors"
 import dotenv from 'dotenv';
+import http from "http";
 import session from "express-session"
 import authRoutes from "./routes/authRoutes.js";
 import imageRoutes from "./routes/imageRoutes.js";
 import userData from "./routes/userData.js";
-
+import  {initializeSockets}  from "./config/sockets.js";
+import { Server } from "socket.io";
 dotenv.config();
 const app=express()
+const server = http.createServer(app);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true,parameterLimit: 50000 }));
 app.use(cors({origin: process.env.IP,credentials: true}))
-
+const io = new Server(server, { cors: { origin: "*" } });
 app.use(session({
     resave:false,
     saveUninitialized:false,
@@ -22,9 +25,13 @@ app.use(session({
         secure:true
     }
 }))
+
 app.use("/auth", authRoutes);
 app.use("/media", imageRoutes);
 app.use("/user", userData);
-app.listen(8081,()=>{
+
+initializeSockets(io);
+
+server.listen(8081,()=>{
     console.log("running")
 })

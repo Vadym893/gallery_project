@@ -30,9 +30,7 @@ export function User_page(){
                     {
                         headers: {
                             "Content-Type": "application/json",
-                            ...(localStorage.authToken
-                                ? { Authorization: "Bearer " + getCookie("accessToken") }
-                                : {}),
+                            ...(getCookie("accessToken") ? { Authorization: "Bearer " + getCookie("accessToken") } : {}),
                         },
                         withCredentials: true, 
                     }

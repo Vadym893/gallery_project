@@ -1,7 +1,7 @@
 import React,{useState} from "react";
 import { Link } from "react-router-dom";
 import { Header_home } from "./header";
-import { setCookie} from "../app/cookies";
+import { setCookie,getCookie} from "../app/cookies";
 import axios from "axios";
 export const Login=()=>{
     const [username,setUsername]=useState("");
@@ -14,17 +14,14 @@ export const Login=()=>{
             username: username,
             password: password,
             headers: {
-                "Content-Type": "application/json",
-                ...(localStorage.authToken
-                    ? { Authorization: "Bearer " + localStorage.authToken }
-                    : {}),
-                
-                }
+                          "Content-Type": "application/json",
+                          ...(getCookie("accessToken") ? { Authorization: "Bearer " + getCookie("accessToken") } : {}),
+                        }
             }, {
                 withCredentials: true 
             },);
-            setCookie("accessToken",loginResponse.data.accessToken,2)
-            setCookie("userdata",loginResponse.data.id,2)
+            setCookie("accessToken",loginResponse.data.accessToken,2/3)
+            setCookie("userdata",loginResponse.data.id,2/3)
             window.location.href ="/"
             
 

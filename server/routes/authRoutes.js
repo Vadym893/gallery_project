@@ -40,45 +40,68 @@ authRoutes.post("/login", async (req, res) => {
         const accessToken = generateAccessToken(username);
         const refreshToken = generateRefreshToken(username);
 
-        await redisClient.hSet(results[0].id, {
-            accessToken,
-            refreshToken
-        });
+        await redisClient.set(`${results[0].id}:accessToken`, accessToken, { EX: 2400 }); 
+        await redisClient.set(`${results[0].id}:refreshToken`, refreshToken, { EX: 86400 }); 
 
-        await redisClient.expire(results[0].id, 86400); 
-        await redisClient.expire(`${results[0].id}:accessToken`, 2400);
         res.status(200).json({ accessToken: accessToken, id: results[0].id });
     });
 });
 async function checkAndRenewAccessToken(req, res, next) {
     try {
-        const  userId  = req.headers["userid"];
+        const userId = req.headers["userid"];
         if (!userId) return res.status(404).json({ error: "Unauthorized - No User ID Provided" });
 
-        const tokens = await redisClient.hGetAll(userId);
-        if (!tokens.refreshToken) {
+        const accessToken = await redisClient.get(`${userId}:accessToken`);
+        const refreshToken = await redisClient.get(`${userId}:refreshToken`);
+
+        if (!refreshToken) {
             return res.status(401).json({ error: "Session expired. Please log in again." });
         }
 
-        if (!tokens.accessToken && tokens.refreshToken) {
+        if (!accessToken && refreshToken) {
             console.log(`🔄 Renewing access token for user ${userId}`);
-            const newAccessToken = generateAccessToken(userId);
-            await redisClient.hSet(userId, "accessToken", newAccessToken);
-            await redisClient.expire(`${userId}:accessToken`, 2400); 
+            const lastAccessToken = await redisClient.get(`${userId}:accessToken`);
+            
+            if (!lastAccessToken) {
+                return res.status(401).json({ error: "Session expired. Please log in again." });
+            }
 
-            req.accessToken = newAccessToken;
+            await redisClient.set(`${userId}:accessToken`, lastAccessToken, { EX: 2400 });
+            req.accessToken = lastAccessToken;
+            return next(); 
         } else {
-            req.accessToken = tokens.accessToken;
+            return res.json({ message: "You still have your old token" }); 
         }
 
-        req.userId = userId;
-        next();
+    } catch (err) {
+        console.error("❌ Error:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+authRoutes.get('/protected',checkAndRenewAccessToken, async (req, res) => {
+    res.json({ message: "Access granted", userId: req.userId, accessToken: req.accessToken });
+});
+authRoutes.post('/logout', async (req, res) => {
+    try {
+        const userId = req.headers["userid"]; 
+        if (!userId) return res.status(400).json({ error: "User ID is required" });
+
+        console.log(`🔴 Logging out user ${userId}`);
+
+
+        await redisClient.del(`${userId}:accessToken`);
+        await redisClient.del(`${userId}:refreshToken`);
+
+        res.json({
+            message: "Logged out successfully",
+            deleteCookies: ["accessToken", "refreshToken"] 
+        });
+
     } catch (err) {
         console.error("❌ Error:", err);
         res.status(500).json({ error: "Internal Server Error" });
     }
-}
-authRoutes.get('/protected',checkAndRenewAccessToken, async (req, res) => {
-    res.json({ message: "Access granted", userId: req.userId, accessToken: req.accessToken });
 });
+
 export default authRoutes;

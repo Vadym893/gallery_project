@@ -1,7 +1,7 @@
 import React,{useState} from "react";
 import { Link } from "react-router-dom";
 import { getCookie,delete_cookie } from "../app/cookies";
-
+import axios from "axios";
 export  function Header_home({onAddClick}){
     const scroll_top=()=>{
         window.scrollTo({top: 0, behavior: 'smooth'});
@@ -11,10 +11,30 @@ export  function Header_home({onAddClick}){
     const toggleMenu = () => {
       setMenuVisible(!isMenuVisible);
     };
-    async function logout() {
+    const logout =async (e)=> {
+        e.preventDefault();
+        try { 
+            
+            const loginResponse = await axios.post('http://localhost:8081/auth/logout', {
+            headers: {
+                "Content-Type": "application/json",
+                "userId":( getCookie("userdata")),
+                ...(getCookie("accessToken") ? { Authorization: "Bearer " + getCookie("accessToken") } : {}),
+            }
+            }, {
+                withCredentials: true 
+            },);
             delete_cookie('accessToken');
+            delete_cookie("userdata");
             console.log('Logged out successfully');
             window.location.href="/login";
+            
+
+            
+        } catch (error) {
+            console.log(error)
+        }
+            
     }  
     return(
         <>
@@ -32,7 +52,13 @@ export  function Header_home({onAddClick}){
                     </ul>
                     <ul className="header_list " style={{flexGrow:0.5}}>
                         <li><div className="header_list_item">Price</div></li>
-                        <li><div className="header_list_item"><svg width="1vw" height="1vw" className="language_choose"><circle cx="10" cy="10" r="8"fill="transparent" stroke="black" strokeWidth={2}/><line x1="2" y1="8" x2="18" y2="8" stroke="black"  /><line x1="2" y1="12" x2="18" y2="12" stroke="black" /><path d="M 10 2 C 10 2, 17 10, 10 18" stroke="black" fill="transparent" /><path d="M 10 2 C 10 2, 3 10, 10 18" stroke="black" fill="transparent" /></svg></div></li>
+                        <li>
+                            <div className="header_list_item">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{height:"1.4vw"}}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                                </svg>
+                            </div>
+                        </li>
                         <li>
                             <div id="settings" className="header_list_item" onClick={toggleMenu}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
